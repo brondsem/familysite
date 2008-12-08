@@ -139,7 +139,7 @@ function checkOpenID() {
         } else {
             // Generate form markup and render it.
             $form_id = 'openid_message';
-            $form_html = $auth_request->htmlMarkup(getTrustRoot(), getReturnTo(),
+            $form_html = $auth_request->htmlMarkup(getOpenIDTrustRoot(), getOpenIDReturnTo(),
                                                 false, array('id' => $form_id));
 
             // Display an error if the form markup couldn't be generated;
@@ -148,12 +148,11 @@ function checkOpenID() {
                 $error = "Could not redirect to server: " . $form_html->message;
                 return null;
             } else {
-                echo "<plaintext>"; # FIXME.. what does this form_html do?
                 print $form_html;
                 exit;
             }
         }
-    } else if (isset($_GET['submit'])) {
+    } else if (isset($_GET['openid_submit'])) {
         $error = "Expected an OpenID URL.";
         return null;
     } else {

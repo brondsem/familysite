@@ -9,15 +9,55 @@ if (isset($_GET['logout'])) {
 
 checkOpenID();
 
+
+
+?>
+<html>
+<head>
+<title>FamilySite</title>
+<?php if ($_SESSION['openid'] == null) { ?>
+    <link rel="stylesheet" href="openid-selector/css/openid.css" />
+<?php } ?>
+</head>
+<body>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
+<?php
+
 echo @$error;
 
 if ($_SESSION['openid'] == null) {
     ?>
-    <form method="get">
+    <form method="get" id="openid_form">
+        <!--
         OpenID:
-        <input type="text" name="openid_identifier" value="" style="background: url(images/openid.gif) left no-repeat; padding-left:18px;"/>
+        <input type="text" name="openid_identifier" value="" />
         <input type="submit" name="login" value="login"/>
+        -->
+        <fieldset>
+                <legend>Sign-in or Create New Account</legend>
+
+                <div id="openid_choice">
+                        <p>Please click your account provider:</p>
+                        <div id="openid_btns"></div>
+                        </div>
+
+                        <div id="openid_input_area">
+                                <input id="openid_identifier" name="openid_identifier" type="text" value="http://" style="background: url(images/openid.gif) left no-repeat; padding-left:18px;"/>
+                                <input id="openid_submit" type="submit" value="Sign-In"/>
+                        </div>
+                        <noscript>
+                        <p>OpenID is service that allows you to log-on to many different websites using a single indentity.
+                        Find out <a href="http://openid.net/what/">more about OpenID</a> and <a href="http://openid.net/get/">how to get an OpenID enabled account</a>.</p>
+                        </noscript>
+        </fieldset>    
     </form>
+    <script type="text/javascript" src="openid-selector/js/openid-jquery.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            openid.img_path='openid-selector/images/';
+            openid.init('openid_identifier');
+        });
+    </script>
     <?php
     return;
 } else if ($_SESSION['openid'] == 'http://brondsema.net/') {
