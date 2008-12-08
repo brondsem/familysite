@@ -15,7 +15,7 @@ if ($_SESSION['openid'] == null) {
     ?>
     <form method="get">
         OpenID:
-        <input type="text" name="openid_identifier" value="" />
+        <input type="text" name="openid_identifier" value="" style="background: url(images/openid.gif) left no-repeat; padding-left:18px;"/>
         <input type="submit" name="login" value="login"/>
     </form>
     <?php
