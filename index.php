@@ -60,9 +60,13 @@ if ($_SESSION['openid'] == null) {
     </script>
     <?php
     return;
-} else if ($_SESSION['openid'] == 'http://brondsema.net/') {
-    echo "Welcome, ", $_SESSION['openid'];
+} else {
+    echo "<p>Welcome, ", $_SESSION['openid'], "</p>";
+    echo "<p>"; print_r($_SESSION); echo "</p>";
     ?> <a href="?logout">Log out</a><?php
+    if ($_SESSION['openid'] != 'http://brondsema.net/') {
+        die("<br/>unauthorized");
+    }
 }
 
 $store = ARC2::getStore($arc_config);
