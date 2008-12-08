@@ -1,6 +1,29 @@
 <?php
 require_once(dirname(__FILE__).'/config.php');
 require_once(dirname(__FILE__).'/arc/ARC2.php');
+require_once(dirname(__FILE__).'/openid.php');
+
+if (isset($_GET['logout'])) {
+    $_SESSION = array();
+}
+
+checkOpenID();
+
+echo @$error;
+
+if ($_SESSION['openid'] == null) {
+    ?>
+    <form method="get">
+        OpenID:
+        <input type="text" name="openid_identifier" value="" />
+        <input type="submit" name="login" value="login"/>
+    </form>
+    <?php
+    return;
+} else if ($_SESSION['openid'] == 'http://brondsema.net/') {
+    echo "Welcome, ", $_SESSION['openid'];
+    ?> <a href="?logout">Log out</a><?php
+}
 
 $store = ARC2::getStore($arc_config);
 if (!$store->isSetUp()) {
