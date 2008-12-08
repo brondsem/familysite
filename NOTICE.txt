@@ -1,3 +1,12 @@
 
 This product includes ARC, developed by Benjamin Nowack,
 which is available under the W3C Software License http://www.w3.org/Consortium/Legal/2002/copyright-software-20021231
+http://arc.semsol.org/
+
+This product includes openid-selector, developed by andyjm,
+which is available under the New BSD License http://www.opensource.org/licenses/bsd-license.php
+http://code.google.com/p/openid-selector/
+
+This product includes php-openid, developed by JanRain, Inc.,
+which is available under the Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+http://openidenabled.com/php-openid/
