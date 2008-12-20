@@ -20,9 +20,9 @@ if ($rows = $rdf->query($q, 'rows')) {
     foreach ($rows as $row) {
         $email = ($row['email'] ? $row['email'] : $row['email2']);
         $r .= '<tr><td>';
-        if ($row['p'] == $_SESSION['id']) {
+        #if ($row['p'] == $_SESSION['id']) {
             $r .= '<a href="edit.php?id=' . $row['p'] . '">Edit</a>';
-        }
+        #}
         $r .= '</td><td>' . $row['name'] . '</td><td><a href="'.$email.'">' . str_replace('mailto:','',$email) . '</a></td></tr>';
     }
 }

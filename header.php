@@ -28,6 +28,9 @@ PREFIX vc: <http://www.w3.org/2006/vcard/ns#> .
     <link rel="stylesheet" href="openid-selector/css/openid.css" />
 <?php } ?>
 <style type="text/css">
+.input_form {
+    margin-left: 3em;
+}
 .input_form div {
     padding-top: .5em;
     padding-bottom: .5em;
@@ -40,6 +43,9 @@ PREFIX vc: <http://www.w3.org/2006/vcard/ns#> .
 }
 .input_form div * {
     vertical-align: bottom;
+}
+.input_form fieldset {
+    width:40em;
 }
 </style>
 </head>
