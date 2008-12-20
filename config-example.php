@@ -5,8 +5,8 @@ $arc_config = array(
   'db_name' => 'mydatabase',
   'db_user' => 'myusername',
   'db_pwd' => 'mypassword',
-  /* store */
-  'store_name' => 'arc_tests',
+  /* store; this is used fo database table prefixes */
+  'store_name' => 'familysite',
   /* parsers */
   'bnode_prefix' => 'bn',
   /* sem html extraction */

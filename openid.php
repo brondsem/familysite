@@ -92,6 +92,10 @@ function checkOpenID() {
             
             $_SESSION['openid'] = $openid;
         }
+        
+        # redirect to clean up the URL
+        header("Location: " . str_replace('?openid_returning=1','',getOpenIDReturnTo()));
+        die;
     } else if (isset($_GET['openid_identifier'])) {
         $openid = $_GET['openid_identifier'];
     

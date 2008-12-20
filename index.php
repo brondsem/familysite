@@ -9,7 +9,15 @@ if (isset($_GET['logout'])) {
 
 checkOpenID();
 
+$rdf = ARC2::getStore($arc_config);
+if (!$rdf->isSetUp()) {
+    $rdf->setUp();
+}
 
+#$rdf->query('BASE <.> LOAD </../brondsema.n3>')    or die (print_r($store->getErrors(),true));
+
+$prefixes = 'PREFIX foaf: <http://xmlns.com/foaf/0.1/> .
+';
 
 ?>
 <html>
@@ -60,36 +68,26 @@ if ($_SESSION['openid'] == null) {
     </script>
     <?php
     return;
+} else if (!$rdf->query($prefixes."ASK { ?x foaf:openid <{$_SESSION['openid']}> }", 'raw')) {
+    die("<br/>unauthorized {$_SESSION['openid']}");
 } else {
+    
     echo "<p>Welcome, ", $_SESSION['openid'], "</p>";
     echo "<p>"; print_r($_SESSION); echo "</p>";
     ?> <a href="?logout">Log out</a><?php
-    if ($_SESSION['openid'] != 'http://brondsema.net/') {
-        die("<br/>unauthorized");
+}
+
+
+$q = $prefixes.'SELECT ?person ?name WHERE {
+    ?person a foaf:Person ; foaf:name ?name .
+}';
+$r = '';
+if ($rows = $rdf->query($q, 'rows')) {
+    foreach ($rows as $row) {
+        $r .= '<li>' . $row['name'] . '</li>';
     }
 }
 
-$store = ARC2::getStore($arc_config);
-if (!$store->isSetUp()) {
-	$store->setUp();
-}
-
-$store->query('BASE <.> LOAD </../brondsema.n3>')
-	or die (print_r($store->getErrors(),true));
-
-$q = '
-  PREFIX foaf: <http://xmlns.com/foaf/0.1/> .
-    SELECT ?person ?name WHERE {
-        ?person a foaf:Person ; foaf:name ?name .
-	  }
-	  ';
-	  $r = '';
-	  if ($rows = $store->query($q, 'rows')) {
-	    foreach ($rows as $row) {
-	        $r .= '<li>' . $row['name'] . '</li>';
-		  }
-		  }
-
-		  echo $r ? '<ul>' . $r . '</ul>' : 'no named persons found';
+echo $r ? '<ul>' . $r . '</ul>' : 'nobody found';
   
 ?>
