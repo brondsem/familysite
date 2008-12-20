@@ -14,7 +14,7 @@ if (!$rdf->isSetUp()) {
     $rdf->setUp();
 }
 
-#$rdf->query('BASE <.> LOAD </../brondsema.n3>')    or die (print_r($store->getErrors(),true));
+#$rdf->reset(); $rdf->query('BASE <.> LOAD </../brondsema.n3>') or die (print_r($rdf->getErrors(),true));
 
 $prefixes = 'PREFIX foaf: <http://xmlns.com/foaf/0.1/> .
 PREFIX vc: <http://www.w3.org/2006/vcard/ns#> .
@@ -94,7 +94,7 @@ $q = $prefixes.'SELECT ?name ?email ?email2
 WHERE {
     ?p a foaf:Person .
     OPTIONAL { ?p foaf:name ?name . }
-    OPTIONAL { ?p foaf:email ?email . }
+    OPTIONAL { ?p foaf:mbox ?email . }
     OPTIONAL { ?p vc:email ?email2 . }
 }';
 $r = '';
