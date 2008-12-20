@@ -86,7 +86,7 @@ $email = str_replace('mailto:','',$email);
         <?php if ($r['gender']=='male') echo "checked='checked'";?>> Male</label>
 </div>
 <fieldset>
-    <legend>Address</legend>
+    <legend>Home Address</legend>
     <div>
         <label for="street-address">Street Address</label>
         <input type="text" name="street-address" value="<?php echo htmlspecialchars($r['street_address'])?>"/>
@@ -129,3 +129,5 @@ $email = str_replace('mailto:','',$email);
     <a href="index.php" style="margin-left:2em">Cancel</a>
 </div>
 </form>
+
+<?php require_once(dirname(__FILE__).'/footer.php');?>

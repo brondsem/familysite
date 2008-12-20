@@ -15,18 +15,32 @@ WHERE {
     OPTIONAL { ?p vc:email ?email2 . }
 }
 ORDER BY ?name';
-$r = '';
+
 if ($rows = $rdf->query($q, 'rows')) {
+    ?>
+    <table>
+    <?php
     foreach ($rows as $row) {
         $email = ($row['email'] ? $row['email'] : $row['email2']);
-        $r .= '<tr><td>';
-        #if ($row['p'] == $_SESSION['id']) {
-            $r .= '<a href="edit.php?id=' . $row['p'] . '">Edit</a>';
-        #}
-        $r .= '</td><td>' . $row['name'] . '</td><td><a href="'.$email.'">' . str_replace('mailto:','',$email) . '</a></td></tr>';
+        echo '<tr><td><a ';
+        if ($row['p'] != $_SESSION['id']) {
+            echo 'style="color:gray" ';
+        }
+        echo 'href="edit.php?id=' . $row['p'] . '">Edit</a>';
+        echo '</td><td>';
+        if ($row['p'] == $_SESSION['id']) {
+            echo "<strong>";
+        }
+        echo $row['name'];
+        if ($row['p'] == $_SESSION['id']) {
+            echo "</strong>";
+        }
+        echo '</td><td><a href="'.$email.'">' . str_replace('mailto:','',$email) . '</a></td></tr>';
     }
+    ?>
+    </table>
+    <?php
 }
 
-echo $r ? '<table>' . $r . '</table>' : 'nobody found';
-  
+require_once(dirname(__FILE__).'/footer.php');
 ?>

@@ -24,10 +24,23 @@ PREFIX vc: <http://www.w3.org/2006/vcard/ns#> .
 <html>
 <head>
 <title>FamilySite</title>
+
+<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.6.0/build/reset-fonts-grids/reset-fonts-grids.css"> 
+<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.6.0/build/base/base-min.css"> 
 <?php if ($_SESSION['openid'] == null) { ?>
     <link rel="stylesheet" href="openid-selector/css/openid.css" />
 <?php } ?>
+
 <style type="text/css">
+fieldset {
+    background: #F6F6F6;
+    border: 1px solid lightGrey;
+}
+fieldset legend {
+    margin-left: 1em;
+    padding-left: 0.3em;
+    padding-right: 0.3em;
+}
 .input_form {
     margin-left: 3em;
 }
@@ -51,6 +64,17 @@ PREFIX vc: <http://www.w3.org/2006/vcard/ns#> .
 </head>
 <body>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
+<div id="doc4" class="yui-t7">
+    <div id="hd">
+        <?php if ($_SESSION['id']) { ?>
+                <a style="float:right" href="?logout">Log out</a>
+        <?php } ?>
+        <h1>Family Website</h1>
+    </div>
+    <div id="bd">
+        <div class="yui-g">
+
+
 <?php
 
 echo @$error;
@@ -84,6 +108,7 @@ if ($_SESSION['openid'] == null) {
         });
     </script>
     <?php
+    require_once(dirname(__FILE__).'/footer.php');
     die;
 } else {
     if (!$_SESSION['id']) {
@@ -103,10 +128,10 @@ if ($_SESSION['openid'] == null) {
             $_SESSION['name'] = $_SESSION['openid'];
         }
         if (!$_SESSION['id']) {
-            die("<br/>unauthorized {$_SESSION['openid']}");
+            echo "<p>unauthorized {$_SESSION['openid']}</p>";
+            require_once(dirname(__FILE__).'/footer.php');
+            die;
         }
     }
 }
 ?>
-<a style="float:right" href="?logout">Log out</a>
-<?php
