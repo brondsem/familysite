@@ -64,15 +64,29 @@ if ($_SESSION['openid'] == null) {
     </script>
     <?php
     return;
-} else if (!$rdf->query($prefixes."ASK { ?x foaf:openid <{$_SESSION['openid']}> }", 'raw')) {
-    die("<br/>unauthorized {$_SESSION['openid']}");
 } else {
+    if (!$_SESSION['name']) {
+        # get name, else openid, or if you don't have that you're not authorized
+        $me = $rdf->query($prefixes."
+            SELECT ?p ?name
+            WHERE { ?p foaf:openid <{$_SESSION['openid']}>
+                OPTIONAL { ?p foaf:name ?name . }
+            }", 'row');
+        if ($me['name']) {
+            $_SESSION['name'] = $me['name'];
+        } else if ($me['p']) {
+            $_SESSION['name'] = $_SESSION['openid'];
+        } else {
+            die("<br/>unauthorized {$_SESSION['openid']}");
+        }
+    }
     
-    echo "<p>Welcome, ", $_SESSION['openid'], "</p>";
+    ?> <a style="float:right" href="?logout">Log out</a><?php
+    
+    echo "<p>Welcome, ", $_SESSION['name'], "</p>";
     /* TODO: use openid simple reg. info
     echo "<p>"; print_r($_SESSION); echo "</p>";
     */
-    ?> <a href="?logout">Log out</a><?php
 }
 
 
@@ -86,7 +100,8 @@ WHERE {
 $r = '';
 if ($rows = $rdf->query($q, 'rows')) {
     foreach ($rows as $row) {
-        $r .= '<tr><td>' . $row['name'] . '</td><td>' . $row['email'] . $row['email2'] . '</td></tr>';
+        $email = ($row['email'] ? $row['email'] : $row['email2']);
+        $r .= '<tr><td>' . $row['name'] . '</td><td><a href="'.$email.'">' . str_replace('mailto:','',$email) . '</a></td></tr>';
     }
 }
 
