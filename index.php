@@ -17,6 +17,7 @@ if (!$rdf->isSetUp()) {
 #$rdf->query('BASE <.> LOAD </../brondsema.n3>')    or die (print_r($store->getErrors(),true));
 
 $prefixes = 'PREFIX foaf: <http://xmlns.com/foaf/0.1/> .
+PREFIX vc: <http://www.w3.org/2006/vcard/ns#> .
 ';
 
 ?>
@@ -36,11 +37,6 @@ echo @$error;
 if ($_SESSION['openid'] == null) {
     ?>
     <form method="get" id="openid_form">
-        <!--
-        OpenID:
-        <input type="text" name="openid_identifier" value="" />
-        <input type="submit" name="login" value="login"/>
-        -->
         <fieldset>
                 <legend>Sign-in or Create New Account</legend>
 
@@ -73,21 +69,27 @@ if ($_SESSION['openid'] == null) {
 } else {
     
     echo "<p>Welcome, ", $_SESSION['openid'], "</p>";
+    /* TODO: use openid simple reg. info
     echo "<p>"; print_r($_SESSION); echo "</p>";
+    */
     ?> <a href="?logout">Log out</a><?php
 }
 
 
-$q = $prefixes.'SELECT ?person ?name WHERE {
-    ?person a foaf:Person ; foaf:name ?name .
+$q = $prefixes.'SELECT ?name ?email ?email2
+WHERE {
+    ?p a foaf:Person .
+    OPTIONAL { ?p foaf:name ?name . }
+    OPTIONAL { ?p foaf:email ?email . }
+    OPTIONAL { ?p vc:email ?email2 . }
 }';
 $r = '';
 if ($rows = $rdf->query($q, 'rows')) {
     foreach ($rows as $row) {
-        $r .= '<li>' . $row['name'] . '</li>';
+        $r .= '<tr><td>' . $row['name'] . '</td><td>' . $row['email'] . $row['email2'] . '</td></tr>';
     }
 }
 
-echo $r ? '<ul>' . $r . '</ul>' : 'nobody found';
+echo $r ? '<table>' . $r . '</table>' : 'nobody found';
   
 ?>
