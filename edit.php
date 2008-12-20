@@ -16,6 +16,7 @@ $optionals = array(
     'vc:email ?email2',
     'foaf:homepage ?web',
     'vc:bday ?bday',
+    'foaf:gender ?gender',
 );
 $q = $prefixes."SELECT *
 WHERE {
@@ -76,6 +77,13 @@ $email = str_replace('mailto:','',$email);
 <div>
     <label for="bday">Birthdate</label>
     <input type="text" name="bday" value="<?php echo htmlspecialchars($r['bday'])?>" style="width:7em"/>
+</div>
+<div>
+    <label>Gender</label>
+    <label style="width:auto;float:none"><input type="radio" name="gender" value="female"
+        <?php if ($r['gender']=='female') echo "checked='checked'";?>> Female</label>
+    <label style="width:auto;float:none"><input type="radio" name="gender" value="male"
+        <?php if ($r['gender']=='male') echo "checked='checked'";?>> Male</label>
 </div>
 <fieldset>
     <legend>Address</legend>
