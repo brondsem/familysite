@@ -28,9 +28,20 @@ PREFIX vc: <http://www.w3.org/2006/vcard/ns#> .
     <link rel="stylesheet" href="openid-selector/css/openid.css" />
 <?php } ?>
 <style type="text/css">
+.input_form div {
+    padding-top: .5em;
+    padding-bottom: .5em;
+}
 .input_form label {
-    display: block;
-}</style>
+    float:left;
+    width:15em;
+    text-align:right;
+    margin-right:1em;
+}
+.input_form div * {
+    vertical-align: bottom;
+}
+</style>
 </head>
 <body>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
