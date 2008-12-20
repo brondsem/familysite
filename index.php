@@ -65,18 +65,23 @@ if ($_SESSION['openid'] == null) {
     <?php
     return;
 } else {
-    if (!$_SESSION['name']) {
-        # get name, else openid, or if you don't have that you're not authorized
+    if (!$_SESSION['id']) {
+    
         $me = $rdf->query($prefixes."
             SELECT ?p ?name
             WHERE { ?p foaf:openid <{$_SESSION['openid']}>
                 OPTIONAL { ?p foaf:name ?name . }
             }", 'row');
+            
+        if ($me['p']) {
+            $_SESSION['id'] = $me['p'];
+        }
         if ($me['name']) {
             $_SESSION['name'] = $me['name'];
-        } else if ($me['p']) {
-            $_SESSION['name'] = $_SESSION['openid'];
         } else {
+            $_SESSION['name'] = $_SESSION['openid'];
+        }
+        if (!$_SESSION['id']) {
             die("<br/>unauthorized {$_SESSION['openid']}");
         }
     }
@@ -90,18 +95,23 @@ if ($_SESSION['openid'] == null) {
 }
 
 
-$q = $prefixes.'SELECT ?name ?email ?email2
+$q = $prefixes.'SELECT ?p ?name ?email ?email2
 WHERE {
     ?p a foaf:Person .
     OPTIONAL { ?p foaf:name ?name . }
     OPTIONAL { ?p foaf:mbox ?email . }
     OPTIONAL { ?p vc:email ?email2 . }
-}';
+}
+ORDER BY ?name';
 $r = '';
 if ($rows = $rdf->query($q, 'rows')) {
     foreach ($rows as $row) {
         $email = ($row['email'] ? $row['email'] : $row['email2']);
-        $r .= '<tr><td>' . $row['name'] . '</td><td><a href="'.$email.'">' . str_replace('mailto:','',$email) . '</a></td></tr>';
+        $r .= '<tr><td>';
+        if ($row['p'] == $_SESSION['id']) {
+            $r .= '<a href="edit.php?id=' . $row['p'] . '">Edit</a>';
+        }
+        $r .= '</td><td>' . $row['name'] . '</td><td><a href="'.$email.'">' . str_replace('mailto:','',$email) . '</a></td></tr>';
     }
 }
 
