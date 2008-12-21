@@ -81,6 +81,9 @@ if ($_POST) {
     
     if ($r['name'] != $_POST['name']) {
         replace($rdf, $id, 'foaf:Person', 'foaf:name', $_POST['name'], $r['name']);
+        if ($id == $_SESSION['id']) {
+            $_SESSION['name'] = $_POST['name'];
+        }
     }
     
     $email = $r['email'] ? $r['email'] : $r['email2'];
