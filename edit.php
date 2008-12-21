@@ -54,7 +54,7 @@ if ($_POST) {
         }
         
         $q = $prefixes.
-        "INSERT INTO <http://www.brondsema.info/brondsema.n3>
+        "INSERT INTO <$rdf_graph_uri>
         { ?s $p $o . }
         WHERE {
         ?s a $s_type .

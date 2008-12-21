@@ -4,8 +4,8 @@
 # all further logins check against openids stored in the database
 $admin_openid = 'http://my.openid.site.com/';
 
-# internal RDF use only
-$graph_name = 'http://www.myfamily.net/rdf-graph';
+# internal RDF use only.  Recommended to be your website address, followed by '/rdf-graph'.  If your website address changes, though, keep this the same forever.
+$rdf_graph_uri = 'http://www.myfamily.net/rdf-graph';
 
 $arc_config = array(
   /* db */

@@ -127,7 +127,7 @@ if ($_SESSION['openid'] == null) {
         
         # set up a new account
         if ($_SESSION['openid'] == $admin_openid and !isset($me['p'])) {
-            $r = $rdf->query($prefixes."INSERT INTO <$graph_name> { [ a foaf:Person; foaf:openid <$admin_openid>; foaf:name 'New Admin User - Please change to your name' ] . }");
+            $r = $rdf->query($prefixes."INSERT INTO <$rdf_graph_uri> { [ a foaf:Person; foaf:openid <$admin_openid>; foaf:name 'New Admin User - Please change to your name' ] . }");
             if (!$r) die (print_r($rdf->getErrors(),true));
             # requery
             $me = $rdf->query($q, 'row');
