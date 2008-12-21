@@ -26,6 +26,34 @@ $prefixes = 'PREFIX foaf: <http://xmlns.com/foaf/0.1/> .
 PREFIX vc: <http://www.w3.org/2006/vcard/ns#> .
 ';
 
+
+
+if ($_SESSION['openid'] and !$_SESSION['id']) {
+    $q = $prefixes."
+        SELECT ?p ?name
+        WHERE { ?p foaf:openid <{$_SESSION['openid']}>
+            OPTIONAL { ?p foaf:name ?name . }
+        }";
+    $me = $rdf->query($q, 'row');
+    
+    # set up a new account
+    if ($_SESSION['openid'] == $admin_openid and !isset($me['p'])) {
+        $r = $rdf->query($prefixes."INSERT INTO <$rdf_graph_uri> { [ a foaf:Person; foaf:openid <$admin_openid>; foaf:name 'New Admin User - Please change to your name' ] . }");
+        if (!$r) die (print_r($rdf->getErrors(),true));
+        # requery
+        $me = $rdf->query($q, 'row');
+    }
+    
+    if ($me['p']) {
+        $_SESSION['id'] = $me['p'];
+    }
+    if ($me['name']) {
+        $_SESSION['name'] = $me['name'];
+    } else {
+        $_SESSION['name'] = $_SESSION['openid'];
+    }
+}
+
 ?>
 <html>
 <head>
@@ -72,7 +100,7 @@ fieldset legend {
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
 <div id="doc4" class="yui-t7">
     <div id="hd">
-        <?php if ($_SESSION['id']) { ?>
+        <?php if ($_SESSION['openid']) { ?>
                 <a style="float:right" href="?logout">Log out</a>
         <?php } ?>
         <h1>Family Website</h1>
@@ -83,9 +111,8 @@ fieldset legend {
 
 <?php
 
-echo @$error;
-
 if ($_SESSION['openid'] == null) {
+    echo @$error;
     ?>
     <form method="get" id="openid_form">
         <fieldset>
@@ -116,36 +143,11 @@ if ($_SESSION['openid'] == null) {
     <?php
     require_once(dirname(__FILE__).'/footer.php');
     die;
-} else {
-    if (!$_SESSION['id']) {
-        $q = $prefixes."
-            SELECT ?p ?name
-            WHERE { ?p foaf:openid <{$_SESSION['openid']}>
-                OPTIONAL { ?p foaf:name ?name . }
-            }";
-        $me = $rdf->query($q, 'row');
-        
-        # set up a new account
-        if ($_SESSION['openid'] == $admin_openid and !isset($me['p'])) {
-            $r = $rdf->query($prefixes."INSERT INTO <$rdf_graph_uri> { [ a foaf:Person; foaf:openid <$admin_openid>; foaf:name 'New Admin User - Please change to your name' ] . }");
-            if (!$r) die (print_r($rdf->getErrors(),true));
-            # requery
-            $me = $rdf->query($q, 'row');
-        }
-        
-        if ($me['p']) {
-            $_SESSION['id'] = $me['p'];
-        }
-        if ($me['name']) {
-            $_SESSION['name'] = $me['name'];
-        } else {
-            $_SESSION['name'] = $_SESSION['openid'];
-        }
-        if (!$_SESSION['id']) {
-            echo "<p>unauthorized {$_SESSION['openid']}</p>";
-            require_once(dirname(__FILE__).'/footer.php');
-            die;
-        }
-    }
+}
+
+if (!$_SESSION['id']) {
+    echo "<p>unauthorized {$_SESSION['openid']}</p>";
+    require_once(dirname(__FILE__).'/footer.php');
+    die;
 }
 ?>
