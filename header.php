@@ -1,10 +1,13 @@
 <?php
+
 if (!file_exists(dirname(__FILE__).'/config.php')) {
     die("You need to create a config.php.  Please copy config-example.php and modify to suit your environment.");
 }
 require_once(dirname(__FILE__).'/config.php');
+
 require_once(dirname(__FILE__).'/arc/ARC2.php');
 require_once(dirname(__FILE__).'/openid.php');
+
 
 if (isset($_GET['logout'])) {
     $_SESSION = array();
@@ -38,7 +41,7 @@ if ($_SESSION['openid'] and !$_SESSION['id']) {
     
     # set up a new account
     if ($_SESSION['openid'] == $admin_openid and !isset($me['p'])) {
-        $r = $rdf->query($prefixes."INSERT INTO <$rdf_graph_uri> { [ a foaf:Person; foaf:openid <$admin_openid>; foaf:name 'New Admin User - Please change to your name' ] . }");
+        $r = $rdf->query($prefixes."INSERT INTO <$rdf_uri_prefix/graph> { [ a foaf:Person; foaf:openid <$admin_openid>; foaf:name 'New Admin User - Please change to your name' ] . }");
         if (!$r) die (print_r($rdf->getErrors(),true));
         # requery
         $me = $rdf->query($q, 'row');

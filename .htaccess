@@ -1,0 +1,4 @@
+<IfModule mod_php5.c>
+    php_flag magic_quotes_gpc off
+    #php_value error_reporting 2147483647
+</IfModule>

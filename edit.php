@@ -41,7 +41,7 @@ if ($_POST) {
     if (!$r) die (print_r($rdf->getErrors(),true));
     
     function insert($rdf, $s, $s_type, $p, $o) {
-        global $prefixes, $rdf_graph_uri;
+        global $prefixes, $rdf_uri_prefix;
         # a lot of rigamarole to insert
         # full graph name is required
         # since its a bnode, it's prone to make a new one
@@ -54,7 +54,7 @@ if ($_POST) {
         }
         
         $q = $prefixes.
-        "INSERT INTO <$rdf_graph_uri>
+        "INSERT INTO <$rdf_uri_prefix/graph>
         { ?s $p $o . }
         WHERE {
         ?s a $s_type .
@@ -135,7 +135,7 @@ $shared_addr = $rdf->query($shared_addr_q, 'rows');
 ?>
 <div>
     <label for="name">Full Name</label>
-    <input type="text" name="name" value="<?php echo htmlspecialchars($r['name'])?>"/></label>
+    <input type="text" name="name" value="<?php echo htmlspecialchars(@$r['name'])?>"/></label>
 </div>
 
 <?php
@@ -148,40 +148,40 @@ $email = str_replace('mailto:','',$email);
 </div>
 <div>
     <label for="web">Website</label>
-    <input type="text" name="web" value="<?php echo htmlspecialchars($r['web'])?>"/>
+    <input type="text" name="web" value="<?php echo htmlspecialchars(@$r['web'])?>"/>
 </div>
 <div>
     <label for="bday">Birthdate</label>
-    <input type="text" name="bday" value="<?php echo htmlspecialchars($r['bday'])?>" style="width:7em"/>
+    <input type="text" name="bday" value="<?php echo htmlspecialchars(@$r['bday'])?>" style="width:7em"/>
 </div>
 <div>
     <label>Gender</label>
     <label style="width:auto;float:none"><input type="radio" name="gender" value="female"
-        <?php if ($r['gender']=='female') echo "checked='checked'";?>> Female</label>
+        <?php if (@$r['gender']=='female') echo "checked='checked'";?>> Female</label>
     <label style="width:auto;float:none"><input type="radio" name="gender" value="male"
-        <?php if ($r['gender']=='male') echo "checked='checked'";?>> Male</label>
+        <?php if (@$r['gender']=='male') echo "checked='checked'";?>> Male</label>
 </div>
 <fieldset>
     <legend>Home Address</legend>
     <div>
         <label for="street-address">Street Address</label>
-        <input type="text" name="street-address" value="<?php echo htmlspecialchars($r['street_address'])?>"/>
+        <input type="text" name="street-address" value="<?php echo htmlspecialchars(@$r['street_address'])?>"/>
     </div>
     <div>
         <label for="extended-address">Line 2</label>
-        <input type="text" name="extended-address" value="<?php echo htmlspecialchars($r['extended_address'])?>"/>
+        <input type="text" name="extended-address" value="<?php echo htmlspecialchars(@$r['extended_address'])?>"/>
     </div>
     <div>
         <label for="locality">City</label>
-        <input type="text" name="locality" value="<?php echo htmlspecialchars($r['locality'])?>"/>
+        <input type="text" name="locality" value="<?php echo htmlspecialchars(@$r['locality'])?>"/>
     </div>
     <div>
         <label for="region">State</label>
-        <input type="text" name="region" value="<?php echo htmlspecialchars($r['region'])?>" style="width:2em" maxlength="2"/>
+        <input type="text" name="region" value="<?php echo htmlspecialchars(@$r['region'])?>" style="width:2em" maxlength="2"/>
     </div>
     <div>
         <label for="postal-code">Zip</label>
-        <input type="text" name="postal-code" value="<?php echo htmlspecialchars($r['postal_code'])?>" style="width:7em;" maxlength="10"/>
+        <input type="text" name="postal-code" value="<?php echo htmlspecialchars(@$r['postal_code'])?>" style="width:7em;" maxlength="10"/>
     </div>
     <?php if (sizeof($shared_addr) > 0) { ?>
         <div>

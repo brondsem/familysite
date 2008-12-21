@@ -6,7 +6,10 @@ echo "<p>Welcome, ", $_SESSION['name'], "</p>";
 echo "<p>"; print_r($_SESSION); echo "</p>";
 */
 
-
+?>
+<h2>Family Members:</h2>
+<p><a href="edit.php?add">Add someone</a></p>
+<?php
 $q = $prefixes.'SELECT ?p ?name ?email ?email2
 WHERE {
     ?p a foaf:Person .
