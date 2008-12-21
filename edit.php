@@ -41,7 +41,7 @@ if ($_POST) {
     if (!$r) die (print_r($rdf->getErrors(),true));
     
     function insert($rdf, $s, $s_type, $p, $o) {
-        global $prefixes;
+        global $prefixes, $rdf_graph_uri;
         # a lot of rigamarole to insert
         # full graph name is required
         # since its a bnode, it's prone to make a new one
