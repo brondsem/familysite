@@ -57,7 +57,7 @@ if ($_SESSION['openid'] and !$_SESSION['id']) {
 ?>
 <html>
 <head>
-<title>FamilySite</title>
+<title><?php echo $website_title ?></title>
 
 <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.6.0/build/reset-fonts-grids/reset-fonts-grids.css"> 
 <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.6.0/build/base/base-min.css"> 
@@ -103,7 +103,7 @@ fieldset legend {
         <?php if ($_SESSION['openid']) { ?>
                 <a style="float:right" href="?logout">Log out</a>
         <?php } ?>
-        <h1>Family Website</h1>
+        <h1><?php echo $website_title ?></h1>
     </div>
     <div id="bd">
         <div class="yui-g">

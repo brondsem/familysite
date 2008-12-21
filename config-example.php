@@ -4,6 +4,8 @@
 # all further logins check against openids stored in the database
 $admin_openid = 'http://my.openid.site.com/';
 
+$website_title = "Our Family Website";
+
 # internal RDF use only.  Recommended to be your website address, followed by '/rdf-graph'.  If your website address changes, though, keep this the same forever.
 $rdf_graph_uri = 'http://www.myfamily.net/rdf-graph';
 
