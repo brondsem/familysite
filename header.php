@@ -1,6 +1,6 @@
 <?php
 if (!file_exists(dirname(__FILE__).'/config.php')) {
-	die("You need to create a config.php.  Please copy config-example.php and modify to suit your environment.");
+    die("You need to create a config.php.  Please copy config-example.php and modify to suit your environment.");
 }
 require_once(dirname(__FILE__).'/config.php');
 require_once(dirname(__FILE__).'/arc/ARC2.php');
@@ -15,6 +15,9 @@ checkOpenID();
 $rdf = ARC2::getStore($arc_config);
 if (!$rdf->isSetUp()) {
     $rdf->setUp();
+    if (sizeof($rdf->getErrors()) > 0) {
+        die ("Couldn't set up RDF database:<pre> ". print_r($errors,true)."</pre>");
+    }
 }
 
 #$rdf->reset(); $rdf->query('BASE <.> LOAD </../brondsema.n3>') or die (print_r($rdf->getErrors(),true));
@@ -115,13 +118,21 @@ if ($_SESSION['openid'] == null) {
     die;
 } else {
     if (!$_SESSION['id']) {
-    
-        $me = $rdf->query($prefixes."
+        $q = $prefixes."
             SELECT ?p ?name
             WHERE { ?p foaf:openid <{$_SESSION['openid']}>
                 OPTIONAL { ?p foaf:name ?name . }
-            }", 'row');
-            
+            }";
+        $me = $rdf->query($q, 'row');
+        
+        # set up a new account
+        if ($_SESSION['openid'] == $admin_openid and !isset($me['p'])) {
+            $r = $rdf->query($prefixes."INSERT INTO <$graph_name> { [ a foaf:Person; foaf:openid <$admin_openid>; foaf:name 'New Admin User - Please change to your name' ] . }");
+            if (!$r) die (print_r($rdf->getErrors(),true));
+            # requery
+            $me = $rdf->query($q, 'row');
+        }
+        
         if ($me['p']) {
             $_SESSION['id'] = $me['p'];
         }

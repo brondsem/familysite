@@ -7,6 +7,7 @@ if ($_SESSION['id'] != $id) {
 }
 
 $optionals = array(
+    'foaf:openid ?openid',
     'foaf:name ?name',
     'foaf:mbox ?email',
     'vc:email ?email2',
@@ -112,7 +113,7 @@ echo "</pre>";
 */
 
 $r = $rdf->query($q, 'row');
-if (!$r) die (print_r($rdf->getErrors(),true));
+if ($rdf->getErrors()) die (print_r($rdf->getErrors(),true));
 #print_r($r);
 
 
