@@ -6,10 +6,6 @@ if ($_SESSION['id'] != $id) {
     #die("You are not authorized to edit info for this person");
 }
 
-?>
-<form method="POST" action="?id=<?php echo $id?>" class="input_form">
-<?php
-
 $optionals = array(
     'foaf:name ?name',
     'foaf:mbox ?email',
@@ -37,7 +33,83 @@ $q .= "
         ?addr vc:postal-code ?postal_code . }
 }";
 
-#echo $q, "<br><br>";
+
+if ($_POST) {
+
+    $r = $rdf->query($q, 'row');
+    if (!$r) die (print_r($rdf->getErrors(),true));
+    
+    function insert($rdf, $s, $s_type, $p, $o) {
+        global $prefixes;
+        # a lot of rigamarole to insert
+        # full graph name is required
+        # since its a bnode, it's prone to make a new one
+        if (substr($o,0,1) == '<' and substr($o,-1) == '>') {
+            # url
+            # TODO: check escaping
+        } else {
+            # literal
+            $o = "'" . str_replace("'","\\'",$o) . "'";
+        }
+        
+        $q = $prefixes.
+        "INSERT INTO <http://www.brondsema.info/brondsema.n3>
+        { ?s $p $o . }
+        WHERE {
+        ?s a $s_type .
+        FILTER(?s = <$s>)
+        }";
+        #echo $q;
+        $rmod = $rdf->query($q);
+        #print_r($rmod);
+        if (!$rmod) die (print_r($rdf->getErrors(),true));
+    }
+    
+    # this deletes all previous occurrences of $s $p _
+    function replace($rdf, $s, $s_type, $p, $o, $old_o) {
+        global $prefixes;
+        
+        $q = $prefixes."DELETE { <$s> $p ?o . }";
+        #echo $q;
+        $rmod = $rdf->query($q);
+        #print_r($rmod);
+        if (!$rmod) die (print_r($rdf->getErrors(),true));
+        
+        insert($rdf, $s, $s_type, $p, $o);
+    }
+    
+    if ($r['name'] != $_POST['name']) {
+        replace($rdf, $id, 'foaf:Person', 'foaf:name', $_POST['name'], $r['name']);
+    }
+    
+    $email = $r['email'] ? $r['email'] : $r['email2'];
+    $email = str_replace('mailto:','',$email);
+    if ($email != $_POST['email']) {
+        # TODO: check when to do vc:email
+        replace($rdf, $id, 'foaf:Person', 'foaf:mbox', '<mailto:'.$_POST['email'].'>', '<mailto:'.$email.'>');
+    }
+    if ($r['web'] != $_POST['web']) {
+        replace($rdf, $id, 'foaf:Person', 'foaf:homepage', '<'.$_POST['web'].'>', '<'.$r['web'].'>');
+    }
+    if ($r['bday'] != $_POST['bday']) {
+        # FIXME types
+        replace($rdf, $id, 'foaf:Person', 'foaf:bday', $_POST['bday'].'^^xs:date', $r['bday'].'^^xs:date');
+    }
+    if ($r['gender'] != $_POST['gender']) {
+        replace($rdf, $id, 'foaf:Person', 'foaf:gender', $_POST['gender'], $r['gender']);
+    }
+}
+
+
+
+?>
+<form method="POST" action="?id=<?php echo $id?>" class="input_form">
+<?php
+/*
+echo "<pre>";
+print_r($rdf->query($prefixes."DESCRIBE <$id>",'raw'));
+echo "</pre>";
+*/
 
 $r = $rdf->query($q, 'row');
 if (!$r) die (print_r($rdf->getErrors(),true));
