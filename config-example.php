@@ -21,6 +21,11 @@ $arc_config = array(
   'bnode_prefix' => 'bn',
   /* sem html extraction */
   'sem_html_formats' => 'rdfa microformats',
+  /* endpoint */
+  'endpoint_features' => array(
+    'select', 'construct', 'ask', 'describe'
+  ),
+  'endpoint_max_limit' => 500, /* optional */
 );
 
 ?>
