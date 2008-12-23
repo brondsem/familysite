@@ -6,8 +6,11 @@ $admin_openid = 'http://my.openid.site.com/';
 
 $website_title = "Our Family Website";
 
-# internal RDF use only.  Recommended to be your website address, followed by '/rdf-data'.  If your website address changes, though, it's best to keep this the same forever.
-$rdf_uri_prefix = 'http://www.myfamily.net/rdf-data';
+# RDF use only.  Recommended to be your website address, followed by '/resource'.
+# If your website address changes, though, it's best to keep this the same forever... maybe
+# see also http://www4.wiwiss.fu-berlin.de/bizer/pub/LinkedDataTutorial/#howname
+$rdf_uri_prefix = 'http://www.myfamily.net/resource';
+$rdf_data_prefix = 'http://www.myfamily.net/data';
 
 $arc_config = array(
   /* db */
