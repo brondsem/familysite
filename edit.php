@@ -1,6 +1,18 @@
 <?php
 require_once(dirname(__FILE__).'/header.php');
 
+/*
+PREFIX mysql: <http://web-semantics.org/ns/mysql/> 
+SELECT * WHERE {
+  ?p a foaf:Person
+FILTER regex(str(?p), "$rdf_uri_prefix/person/")
+}
+# get largest one; numbers aren't 0-padded
+ORDER by  DESC(mysql:char_length(str(?p))) DESC(str(?p))
+LIMIT 1
+*/
+$next_id = str_replace("$rdf_uri_prefix/person/","",$row['p'])+1;
+
 $id = $_GET['id'];
 if ($_SESSION['id'] != $id) {
     #die("You are not authorized to edit info for this person");
@@ -14,6 +26,8 @@ $optionals = array(
     'foaf:homepage ?web',
     'vc:bday ?bday',
     'foaf:gender ?gender',
+    'vc:mobileTel ?mobileTel',
+    'vc:homeTel ?homeTel',
 );
 $q = $prefixes."SELECT *
 WHERE {
@@ -137,6 +151,17 @@ $shared_addr = $rdf->query($shared_addr_q, 'rows');
     <label for="name">Full Name</label>
     <input type="text" name="name" value="<?php echo htmlspecialchars(@$r['name'])?>"/></label>
 </div>
+<div>
+    <label>Gender</label>
+    <label style="width:auto;float:none"><input type="radio" name="gender" value="female"
+        <?php if (@$r['gender']=='female') echo "checked='checked'";?>> Female</label>
+    <label style="width:auto;float:none"><input type="radio" name="gender" value="male"
+        <?php if (@$r['gender']=='male') echo "checked='checked'";?>> Male</label>
+</div>
+<div>
+    <label for="bday">Birthdate</label>
+    <input type="text" name="bday" value="<?php echo htmlspecialchars(@$r['bday'])?>" style="width:7em"/>
+</div>
 
 <?php
 $email = $r['email'] ? $r['email'] : $r['email2'];
@@ -151,15 +176,12 @@ $email = str_replace('mailto:','',$email);
     <input type="text" name="web" value="<?php echo htmlspecialchars(@$r['web'])?>"/>
 </div>
 <div>
-    <label for="bday">Birthdate</label>
-    <input type="text" name="bday" value="<?php echo htmlspecialchars(@$r['bday'])?>" style="width:7em"/>
+    <label for="homeTel">Home Phone</label>
+    <input type="text" name="homeTel" value="<?php echo htmlspecialchars(@$r['homeTel'])?>"/>
 </div>
 <div>
-    <label>Gender</label>
-    <label style="width:auto;float:none"><input type="radio" name="gender" value="female"
-        <?php if (@$r['gender']=='female') echo "checked='checked'";?>> Female</label>
-    <label style="width:auto;float:none"><input type="radio" name="gender" value="male"
-        <?php if (@$r['gender']=='male') echo "checked='checked'";?>> Male</label>
+    <label for="mobileTel">Cell Phone</label>
+    <input type="text" name="mobileTel" value="<?php echo htmlspecialchars(@$r['mobileTel'])?>"/>
 </div>
 <fieldset>
     <legend>Home Address</legend>
