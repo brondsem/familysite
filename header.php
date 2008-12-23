@@ -106,7 +106,7 @@ fieldset legend {
         <?php if ($_SESSION['openid']) { ?>
                 <a style="float:right" href="?logout">Log out</a>
         <?php } ?>
-        <h1><?php echo $website_title ?></h1>
+        <h1><a href="./" style="text-decoration:none;color:inherit"><?php echo $website_title ?></a></h1>
     </div>
     <div id="bd">
         <div class="yui-g">
