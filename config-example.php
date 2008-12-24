@@ -31,6 +31,7 @@ $arc_config = array(
     'select', 'construct', 'ask', 'describe'
   ),
   'endpoint_max_limit' => 500, /* optional */
+  'store_allow_extension_functions' => 1,
 );
 
 ?>

@@ -1,13 +1,6 @@
 <?php
 
-if (!file_exists(dirname(__FILE__).'/config.php')) {
-    die("You need to create a config.php.  Please copy config-example.php and modify to suit your environment.");
-}
-require_once(dirname(__FILE__).'/config.php');
-
-require_once(dirname(__FILE__).'/arc/ARC2.php');
-require_once(dirname(__FILE__).'/openid.php');
-
+require_once(dirname(__FILE__).'/common.php');
 
 if (isset($_GET['logout'])) {
     $_SESSION = array();
@@ -15,19 +8,8 @@ if (isset($_GET['logout'])) {
 
 checkOpenID();
 
-$rdf = ARC2::getStore($arc_config);
-if (!$rdf->isSetUp()) {
-    $rdf->setUp();
-    if (sizeof($rdf->getErrors()) > 0) {
-        die ("Couldn't set up RDF database:<pre> ". print_r($errors,true)."</pre>");
-    }
-}
-
 #$rdf->reset(); $rdf->query('BASE <.> LOAD </../brondsema.n3>') or throw new Exception (print_r($rdf->getErrors(),true));
 
-$prefixes = 'PREFIX foaf: <http://xmlns.com/foaf/0.1/> .
-PREFIX vc: <http://www.w3.org/2006/vcard/ns#> .
-';
 
 
 
@@ -42,7 +24,11 @@ if ($_SESSION['openid'] and !$_SESSION['id']) {
     
     # set up a new account
     if ($_SESSION['openid'] == $admin_openid and !isset($me['p'])) {
-        $r = $rdf->query($prefixes."INSERT INTO <$rdf_uri_prefix/graph> { [ a foaf:Person; foaf:openid <$admin_openid>; foaf:name 'New Admin User - Please change to your name' ] . }");
+        $r = $rdf->query($prefixes."INSERT INTO <$rdf_uri_prefix/graph> {
+            <" . get_next_uri($rdf, 'person') . "> a foaf:Person;
+                foaf:openid <$admin_openid>;
+                foaf:name 'New Admin User - Please change to your name' .
+            }");
         if (!$r) throw new Exception (print_r($rdf->getErrors(),true));
         # requery
         $me = $rdf->query($q, 'row');

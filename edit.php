@@ -79,18 +79,7 @@ if ($_POST) {
     
     if ($id == null) {
         # new
-        $q = $prefixes . "PREFIX mysql: <http://web-semantics.org/ns/mysql/> 
-            SELECT * WHERE {
-              ?p a foaf:Person
-            FILTER regex(str(?p), '^$rdf_uri_prefix/person/')
-            }
-            # get largest one; numbers aren't 0-padded
-            ORDER by  DESC(mysql:char_length(str(?p))) DESC(str(?p))
-            LIMIT 1";
-        $row = $rdf->query($q, 'row');
-        if ($rdf->getErrors()) throw new Exception (print_r($rdf->getErrors(),true));
-        $next_num = str_replace("$rdf_uri_prefix/person/","",$row['p'])+1;
-        $id = $rdf_uri_prefix . '/person/' . $next_num;
+        $id = get_next_uri($rdf, 'person');
         
         # TODO: maybe a way to send 'foaf:Person' without it being inserted as a string
         insert($rdf, $id, 'a', '<http://xmlns.com/foaf/0.1/Person>');

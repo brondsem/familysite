@@ -11,8 +11,6 @@ require_once "Auth/OpenID/FileStore.php";
 require_once "Auth/OpenID/SReg.php";
 
 
-session_start();
-
 
 function &getOpenIDStore() {
     # FIXME: change, to SQL probably
