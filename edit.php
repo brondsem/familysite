@@ -6,36 +6,40 @@ if ($_SESSION['id'] != $id) {
     #die("You are not authorized to edit info for this person");
 }
 
-$optionals = array(
-    'foaf:openid ?openid',
-    'foaf:name ?name',
-    'foaf:mbox ?email',
-    'vc:email ?email2',
-    'foaf:homepage ?web',
-    'vc:bday ?bday',
-    'foaf:gender ?gender',
-    'vc:mobileTel ?mobileTel',
-    'vc:homeTel ?homeTel',
-);
-$q = $prefixes."SELECT *
-WHERE {
-    <$id> a foaf:Person .";
-foreach ($optionals as $p_o) {
-    $q .= " OPTIONAL { <$id> $p_o . } ";
+function get_person_info_query($id) {
+    global $prefixes;
+    
+    $optionals = array(
+        'foaf:openid ?openid',
+        'foaf:name ?name',
+        'foaf:mbox ?email',
+        'vc:email ?email2',
+        'foaf:homepage ?web',
+        'vc:bday ?bday',
+        'foaf:gender ?gender',
+        'vc:mobileTel ?mobileTel',
+        'vc:homeTel ?homeTel',
+    );
+    $q = $prefixes."SELECT *
+    WHERE {
+        <$id> a foaf:Person .";
+    foreach ($optionals as $p_o) {
+        $q .= " OPTIONAL { <$id> $p_o . } ";
+    }
+    $q .= "
+        OPTIONAL { <$id> vc:homeAdr ?addr .
+            ?addr vc:street-address ?street_address . }
+        OPTIONAL { <$id> vc:homeAdr ?addr .
+            ?addr vc:extended-address ?extended_address . }
+        OPTIONAL { <$id> vc:homeAdr ?addr .
+            ?addr vc:locality ?locality . }
+        OPTIONAL { <$id> vc:homeAdr ?addr .
+            ?addr vc:region ?region . }
+        OPTIONAL { <$id> vc:homeAdr ?addr .
+            ?addr vc:postal-code ?postal_code . }
+    }";
+    return $q;
 }
-$q .= "
-    OPTIONAL { <$id> vc:homeAdr ?addr .
-        ?addr vc:street-address ?street_address . }
-    OPTIONAL { <$id> vc:homeAdr ?addr .
-        ?addr vc:extended-address ?extended_address . }
-    OPTIONAL { <$id> vc:homeAdr ?addr .
-        ?addr vc:locality ?locality . }
-    OPTIONAL { <$id> vc:homeAdr ?addr .
-        ?addr vc:region ?region . }
-    OPTIONAL { <$id> vc:homeAdr ?addr .
-        ?addr vc:postal-code ?postal_code . }
-}";
-
 
 if ($_POST) {
 
@@ -114,7 +118,7 @@ if ($_POST) {
     } else {
         # add
         
-        $r = $rdf->query($q, 'row');
+        $r = $rdf->query(get_person_info_query($id), 'row');
         if ($rdf->getErrors()) throw new Exception (print_r($rdf->getErrors(),true));
         if (!$r) throw new Exception ("nobody found with id $id");
         
@@ -167,7 +171,7 @@ print_r($rdf->query($prefixes."DESCRIBE <$id>",'raw'));
 echo "</pre>";
 */
 
-$r = $rdf->query($q, 'row');
+$r = $rdf->query(get_person_info_query($id), 'row');
 if ($rdf->getErrors()) throw new Exception (print_r($rdf->getErrors(),true));
 #print_r($r);
 
