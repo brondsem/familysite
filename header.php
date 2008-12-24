@@ -23,7 +23,7 @@ if (!$rdf->isSetUp()) {
     }
 }
 
-#$rdf->reset(); $rdf->query('BASE <.> LOAD </../brondsema.n3>') or die (print_r($rdf->getErrors(),true));
+#$rdf->reset(); $rdf->query('BASE <.> LOAD </../brondsema.n3>') or throw new Exception (print_r($rdf->getErrors(),true));
 
 $prefixes = 'PREFIX foaf: <http://xmlns.com/foaf/0.1/> .
 PREFIX vc: <http://www.w3.org/2006/vcard/ns#> .
@@ -32,6 +32,7 @@ PREFIX vc: <http://www.w3.org/2006/vcard/ns#> .
 
 
 if ($_SESSION['openid'] and !$_SESSION['id']) {
+    # TODO: check ?p URI to match the URIs we use, or have a foaf:Group for the family, just in case other foaf:Persons get LOADed in
     $q = $prefixes."
         SELECT ?p ?name
         WHERE { ?p foaf:openid <{$_SESSION['openid']}>
@@ -42,7 +43,7 @@ if ($_SESSION['openid'] and !$_SESSION['id']) {
     # set up a new account
     if ($_SESSION['openid'] == $admin_openid and !isset($me['p'])) {
         $r = $rdf->query($prefixes."INSERT INTO <$rdf_uri_prefix/graph> { [ a foaf:Person; foaf:openid <$admin_openid>; foaf:name 'New Admin User - Please change to your name' ] . }");
-        if (!$r) die (print_r($rdf->getErrors(),true));
+        if (!$r) throw new Exception (print_r($rdf->getErrors(),true));
         # requery
         $me = $rdf->query($q, 'row');
     }
@@ -119,7 +120,7 @@ if ($_SESSION['openid'] == null) {
     ?>
     <form method="get" id="openid_form">
         <fieldset>
-                <legend>Sign-in or Create New Account</legend>
+                <legend>Sign-in by relying on one of your existing accounts</legend>
 
                 <div id="openid_choice">
                         <p>Please click your account provider:</p>
