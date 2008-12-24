@@ -1,5 +1,6 @@
 <IfModule mod_php5.c>
     php_flag magic_quotes_gpc off
-    php_value session.gc_maxlifetime 3600 # 60*60*1 = 1 hour
+    # 60*60*1 = 1 hour
+    php_value session.gc_maxlifetime 3600
     #php_value error_reporting 2147483647
 </IfModule>
