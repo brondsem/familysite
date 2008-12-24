@@ -67,6 +67,8 @@ if ($_POST) {
             $o = "'" . str_replace("'","\\'",$o) . "'";
         }
         
+        # this filter is required if the node is anonymous.  Not necessary any more, but might as well continue to support it
+        # could more directly do INSERT ... { <$s> $p $o }, if $s is a URI
         $q = $prefixes.
         "INSERT INTO <$rdf_uri_prefix/graph>
         { ?s $p $o . }
@@ -103,10 +105,12 @@ if ($_POST) {
     $email = $r['email'] ? $r['email'] : $r['email2'];
     $email = str_replace('mailto:','',$email);
     if ($email != $_POST['email']) {
+        # TODO: check syntax
         # TODO: check when to do vc:email
         replace($rdf, $id, 'foaf:Person', 'foaf:mbox', '<mailto:'.$_POST['email'].'>', '<mailto:'.$email.'>');
     }
     if ($r['web'] != $_POST['web']) {
+        # TODO: check syntax (http://)
         replace($rdf, $id, 'foaf:Person', 'foaf:homepage', '<'.$_POST['web'].'>', '<'.$r['web'].'>');
     }
     if ($r['bday'] != $_POST['bday']) {
@@ -115,6 +119,14 @@ if ($_POST) {
     }
     if ($r['gender'] != $_POST['gender']) {
         replace($rdf, $id, 'foaf:Person', 'foaf:gender', $_POST['gender'], $r['gender']);
+    }
+    if ($r['homeTel'] != $_POST['homeTel']) {
+        # TODO: check syntax
+        replace($rdf, $id, 'foaf:Person', 'vc:homeTel', $_POST['homeTel'], '<tel:+1-'.$r['homeTel'].'>');
+    }
+    if ($r['mobileTel'] != $_POST['mobileTel']) {
+        # TODO: check syntax
+        replace($rdf, $id, 'foaf:Person', 'vc:mobileTel', $_POST['mobileTel'], '<tel:+1-'.$r['mobileTel'].'>');
     }
 }
 
@@ -177,11 +189,11 @@ $email = str_replace('mailto:','',$email);
 </div>
 <div>
     <label for="homeTel">Home Phone</label>
-    <input type="text" name="homeTel" value="<?php echo htmlspecialchars(@$r['homeTel'])?>"/>
+    <input type="text" name="homeTel" value="<?php echo htmlspecialchars(str_replace('tel:','',str_replace('tel:+1-',@$r['homeTel'])))?>"/>
 </div>
 <div>
     <label for="mobileTel">Cell Phone</label>
-    <input type="text" name="mobileTel" value="<?php echo htmlspecialchars(@$r['mobileTel'])?>"/>
+    <input type="text" name="mobileTel" value="<?php echo htmlspecialchars(str_replace('tel:','',str_replace('tel:+1-',@$r['mobileTel'])))?>"/>
 </div>
 <fieldset>
     <legend>Home Address</legend>
