@@ -189,11 +189,11 @@ $email = str_replace('mailto:','',$email);
 </div>
 <div>
     <label for="homeTel">Home Phone</label>
-    <input type="text" name="homeTel" value="<?php echo htmlspecialchars(str_replace('tel:','',str_replace('tel:+1-',@$r['homeTel'])))?>"/>
+    <input type="text" name="homeTel" value="<?php echo htmlspecialchars(str_replace('tel:','',str_replace('tel:+1-','',@$r['homeTel'])))?>"/>
 </div>
 <div>
     <label for="mobileTel">Cell Phone</label>
-    <input type="text" name="mobileTel" value="<?php echo htmlspecialchars(str_replace('tel:','',str_replace('tel:+1-',@$r['mobileTel'])))?>"/>
+    <input type="text" name="mobileTel" value="<?php echo htmlspecialchars(str_replace('tel:','',str_replace('tel:+1-','',@$r['mobileTel'])))?>"/>
 </div>
 <fieldset>
     <legend>Home Address</legend>
